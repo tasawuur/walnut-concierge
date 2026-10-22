@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Walnut – Guest Concierge</title>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600&family=Mulish:wght@400;600;700&family=Nunito+Sans:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--s1:#cfe0ea;--s2:#efe3d0;--s3:#f6d9b0;--m1:#9fb7c4;--m2:#7f9aa8;--bld:#5b4636;--win:#f4c26b;--lat:#4a2f20;--leaf:#c0662b;--ink:#1f1a16;--mut:#5a5047;--gl:rgba(255,255,255,.42);--bd:rgba(255,255,255,.7);--seg:rgba(255,255,255,.65);--me:rgba(38,69,53,.82);--chip:rgba(255,255,255,.5);--gold:#a8700f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--s1:#0b1822;--s2:#1c2733;--s3:#4a3426;--m1:#1d3340;--m2:#142530;--bld:#05090c;--win:#f0b55a;--lat:#e3c9ae;--leaf:#d9824a;--ink:#f3ede6;--mut:#b5aba0;--gl:rgba(28,38,44,.5);--bd:rgba(255,255,255,.18);--seg:rgba(255,255,255,.16);--me:rgba(75,130,105,.75);--chip:rgba(255,255,255,.1);--gold:#e0a63c}}
+:root[data-theme="dark"]{--s1:#0b1822;--s2:#1c2733;--s3:#4a3426;--m1:#1d3340;--m2:#142530;--bld:#05090c;--win:#f0b55a;--lat:#e3c9ae;--leaf:#d9824a;--ink:#f3ede6;--mut:#b5aba0;--gl:rgba(28,38,44,.5);--bd:rgba(255,255,255,.18);--seg:rgba(255,255,255,.16);--me:rgba(75,130,105,.75);--chip:rgba(255,255,255,.1);--gold:#e0a63c}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{color:var(--ink);font:15px/1.45 Mulish,system-ui,sans-serif;background:linear-gradient(var(--s1),var(--s2) 55%,var(--s3))}
+.scene{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+.glass,.m,.menu,.tabs,header,.req,.toast,.start>div{background:var(--gl);-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);border:1px solid var(--bd);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 8px 24px rgba(0,0,0,.12)}
+@supports not (backdrop-filter:blur(1px)){.m,.menu,.tabs,header,.req,.toast,.start>div{background:var(--s1)}}
+.app{position:relative;z-index:1;height:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;padding:10px 12px 8px}
+header{padding:10px 16px;border-radius:24px;display:flex;align-items:center;justify-content:space-between}
+.brand{font:600 22px Spectral,Georgia,serif;letter-spacing:.04em}
+.brand small{display:block;font:600 11px Mulish,sans-serif;color:var(--mut);letter-spacing:.06em}
+.who{font-size:12px;color:var(--mut);text-align:right}
+.tabs{display:flex;padding:3px;margin:8px 0;border-radius:16px}
+.tabs button{flex:1;padding:8px;border:0;border-radius:13px;background:none;color:var(--mut);font:700 13px Mulish,sans-serif}
+.tabs button.on{background:var(--seg);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.badge{background:var(--gold);color:#fff;border-radius:9px;padding:0 6px;margin-left:4px;font-size:11px}
+#chat,#desk{flex:1;overflow-y:auto;padding:6px 2px 8px;display:flex;flex-direction:column;gap:10px}
+.m{max-width:88%;padding:12px 16px;border-radius:20px 20px 20px 6px;align-self:flex-start;font:600 16px/1.55 'Nunito Sans',Mulish,system-ui,sans-serif;letter-spacing:.005em}
+.m.me{align-self:flex-end;border-radius:20px 20px 6px 20px;background:var(--me);color:#fff}
+.m.sent{align-self:flex-end;border-radius:20px 20px 6px 20px;background:var(--me);color:#fff}
+.m.sent small{display:block;opacity:.8;font-size:11px}
+.m.rec{align-self:flex-end;border-radius:20px 20px 6px 20px;background:rgba(150,98,14,.92);color:#fff;border-color:transparent}
+.m.rec small{display:block;font-size:11px;font-weight:700;opacity:.85;margin-bottom:2px}
+.m a{color:inherit;font-weight:700;text-decoration:underline}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.chips button,.menu button{font:700 13px Mulish,sans-serif;color:var(--ink);background:var(--chip);border:1px solid var(--bd);border-radius:18px;padding:8px 13px}
+.dots{display:flex;gap:4px;padding:14px}.dots i{width:7px;height:7px;border-radius:50%;background:var(--mut);animation:b 1s infinite}.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes b{50%{opacity:.25}}
+.menu{padding:10px 12px 12px;border-radius:28px;margin-top:4px}
+.menu p{margin:0 0 6px 4px;font-size:12px;color:var(--mut);font-weight:700}
+.menu div{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.menu button{border-radius:16px;padding:13px 8px;font-size:14px}
+#mbtns button:last-child{grid-column:1/-1}
+.menu button:active,.chips button:active{background:var(--me);color:#fff}
+.start{position:fixed;inset:0;background:rgba(0,0,0,.12);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px;z-index:5}
+.start>div{width:100%;max-width:380px;border-radius:28px;padding:24px}
+.start h1{font:600 28px Spectral,Georgia,serif;margin:0 0 4px}
+.start p{margin:0 0 16px;color:var(--mut)}
+.start input{width:100%;padding:13px;margin-bottom:10px;border:1px solid var(--bd);border-radius:14px;background:var(--chip);color:var(--ink);font:inherit}
+.go{width:100%;padding:14px;border:0;border-radius:16px;background:var(--me);color:#fff;font:700 15px Mulish,sans-serif}
+.req{border-radius:18px;padding:12px 14px;margin-bottom:8px}
+.req.done{opacity:.55}
+.req b{display:block}.req span{font-size:12px;color:var(--mut)}
+.req button{margin-top:8px;padding:6px 12px;border:1px solid var(--bd);border-radius:14px;background:var(--chip);color:var(--ink);font:700 12px Mulish,sans-serif}
+.toast{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);left:50%;transform:translateX(-50%);padding:10px 16px;border-radius:18px;font-size:13px;z-index:9;max-width:90%;display:none}
+.note{font-size:12px;color:var(--mut);text-align:center;padding:4px 12px}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.hr{display:flex;align-items:center;gap:10px}
+.cbtn{position:relative;width:40px;height:40px;border-radius:50%;border:1px solid var(--bd);background:var(--chip);color:var(--ink);display:grid;place-items:center;padding:0}
+.cbtn svg{width:20px;height:20px}
+#cdot{display:none;position:absolute;top:3px;right:3px;width:10px;height:10px;border-radius:50%;background:var(--gold);border:2px solid var(--s1)}
+.rc{position:fixed;top:0;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;z-index:6;display:none;flex-direction:column;background:linear-gradient(var(--s1),var(--s2) 60%,var(--s3));padding:calc(env(safe-area-inset-top,0px) + 10px) 12px calc(env(safe-area-inset-bottom,0px) + 10px)}
+.rt{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:22px;margin-bottom:8px}
+.rt b{flex:1;font:600 18px Spectral,Georgia,serif}
+.rt button,.rt a{border:1px solid var(--bd);border-radius:16px;background:var(--chip);color:var(--ink);padding:7px 14px;font:700 13px Mulish,sans-serif;text-decoration:none}
+#rm,.thread{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:4px 2px}
+.thread{flex:none;max-height:40vh;min-height:80px}
+.tm{max-width:82%;font:600 15px/1.5 'Nunito Sans',Mulish,sans-serif;padding:8px 13px;border-radius:18px 18px 18px 6px;align-self:flex-start;background:var(--gl);border:1px solid var(--bd)}
+.tm.mine{align-self:flex-end;border-radius:18px 18px 6px 18px;background:var(--me);color:#fff;border-color:transparent}
+.tm small{display:block;font-size:10px;opacity:.7}
+.rf{display:flex;gap:8px;padding:8px;border-radius:22px;margin-top:8px}
+.rf input{flex:1;min-width:0;padding:10px 12px;border:1px solid var(--bd);border-radius:16px;background:var(--chip);color:var(--ink);font:inherit}
+.rf button{border:0;border-radius:16px;padding:0 16px;background:var(--me);color:#fff;font:700 14px Mulish,sans-serif}
+</style>
+<style>.tabs,#desk{display:none!important}</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+</head>
+<body>
+<svg class="scene" viewBox="0 0 400 800" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+<defs>
+<pattern id="lat" width="44" height="44" patternUnits="userSpaceOnUse"><path d="M22 0L44 22L22 44L0 22Z M22 9L35 22L22 35L9 22Z M22 0V9M22 35V44M0 22H9M35 22H44" fill="none" stroke="var(--lat)" stroke-width="1"/></pattern>
+<linearGradient id="fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient>
+<mask id="mk"><rect width="400" height="520" fill="url(#fade)"/></mask>
+<path id="lf" d="M0-20L5-8L18-12L10-2L20 6L6 6L0 20L-6 6L-20 6L-10-2L-18-12L-5-8Z"/>
+<path id="arch" d="M-4 8V-2Q-4-8 0-9Q4-8 4-2V8Z"/>
+</defs>
+<rect width="400" height="520" fill="url(#lat)" mask="url(#mk)" opacity=".32"/>
+<path d="M0 470L60 380L110 430L180 340L250 440L320 370L400 450V620H0Z" fill="var(--m1)" opacity=".8"/>
+<path d="M0 520L80 450L150 510L230 430L310 500L400 440V640H0Z" fill="var(--m2)" opacity=".85"/>
+<g fill="var(--bld)" opacity=".7">
+<rect x="30" y="560" width="92" height="56"/><path d="M20 560L131 560L76 522Z"/><rect x="100" y="540" width="14" height="22"/>
+<path d="M255 616h90V560h-90z"/><path d="M243 562L357 562L332 534L268 534Z"/><rect x="282" y="506" width="36" height="28"/><path d="M272 508L328 508L314 486L286 486Z"/><rect x="293" y="466" width="14" height="20"/><path d="M287 468L313 468L306 452L294 452Z"/><rect x="299" y="420" width="2" height="32"/><circle cx="300" cy="418" r="3"/>
+</g>
+<g fill="var(--win)" opacity=".9"><use href="#arch" x="48" y="590"/><use href="#arch" x="76" y="590"/><use href="#arch" x="104" y="590"/><use href="#arch" x="275" y="590"/><use href="#arch" x="300" y="590"/><use href="#arch" x="325" y="590"/><use href="#arch" x="300" y="528"/></g>
+<path d="M0 616H400V800H0Z" fill="var(--m2)" opacity=".9"/>
+<path d="M60 700Q120 680 180 700Q120 716 60 700Z M240 740Q300 720 360 740Q300 756 240 740Z" fill="var(--bld)" opacity=".55"/>
+<g fill="var(--leaf)" opacity=".55"><use href="#lf" transform="translate(360 90) rotate(20) scale(1.8)"/><use href="#lf" transform="translate(30 150) rotate(-15) scale(1.2)"/><use href="#lf" transform="translate(320 200) rotate(40) scale(.9)"/></g>
+</svg>
+<div class="toast" id="toast"></div>
+
+<div class="start" id="start"><div>
+<h1>The Walnut</h1><p>Welcome to Pahalgam. Tell us who you are and we’ll open your concierge.</p>
+<input id="gn" placeholder="Your name" autocomplete="off"><input id="gr" placeholder="Room number" inputmode="numeric" autocomplete="off">
+<button class="go" id="enter">Open concierge</button></div></div>
+<div class="app">
+<header><div class="brand">THE WALNUT<small>Homestay, Pahalgam</small></div><div class="who" id="who"></div></header>
+<div class="tabs"><button class="on" id="t1">Guest view</button><button id="t2">Front desk <span class="badge" id="bd" style="display:none">0</span></button></div>
+<div id="chat"></div>
+<div id="desk" style="display:none"><div class="note">Demo of what reception sees. Requests from the guest view appear here.</div><div id="list"></div><div class="note">Live chat with guest</div><div id="dm" class="thread"></div><div class="rf glass"><input id="di" placeholder="Reply as reception"><button id="ds">Reply</button></div></div>
+<div class="rf glass" id="cmp" style="display:none"><input id="ri" placeholder="Type your special request"><button id="rs">Send</button><button id="rx" style="background:var(--chip);color:var(--ink);border:1px solid var(--bd)">Cancel</button></div>
+<div class="menu" id="menu"><p>Tap what you need</p><div id="mbtns"></div></div>
+</div>
+<script>
+// Edit these sample details for your property
+var FB={apiKey:"AIzaSyCp-Wfaj2DCZjZcqQcW4lAR6cAVOn6pPUE",authDomain:"thewalnut-concierge.firebaseapp.com",databaseURL:"https://thewalnut-concierge-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"thewalnut-concierge",storageBucket:"thewalnut-concierge.firebasestorage.app",messagingSenderId:"727484359971",appId:"1:727484359971:web:5db70731630761d541d896"};firebase.initializeApp(FB);var DB=firebase.database(),TS=firebase.database.ServerValue.TIMESTAMP;
+var C={wifi:'TheWalnut',pass:'walnut@123',times:[['Breakfast','8:00 – 10:00 AM'],['Dinner','7:30 – 9:30 PM'],['Check-in','1:00 PM'],['Check-out','11:00 AM']],reception:'+91 00000 00000',manager:'+91 00000 00001'};
+var $=function(s){return document.querySelector(s)},chat=$('#chat'),G={n:'Guest',r:'101'},reqs=[];
+function esc(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML}
+function add(c,h){var d=document.createElement('div');d.className='m '+c;d.innerHTML=h;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;return d}
+function you(t){add('me',esc(t))}
+function bot(h,chips){var t=add('bot','<div class="dots"><i></i><i></i><i></i></div>');setTimeout(function(){t.innerHTML=h;if(chips){var w=document.createElement('div');w.className='chips';chips.forEach(function(c){var b=document.createElement('button');b.textContent=c[0];b.onclick=function(){you(c[0]);c[1]()};w.appendChild(b)});t.appendChild(w)}chat.scrollTop=chat.scrollHeight},500)}
+function send(type,detail){var tm=new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});DB.ref('requests').push({room:G.r,guest:G.n,type:type,detail:detail,ts:TS,done:false});DB.ref('rooms/'+G.r+'/messages').push({w:'g',t:type+': '+detail,ts:TS});
+add('sent',esc(type+': '+detail)+'<small>Sent to Reception · '+tm+'</small>');bot('Done, '+esc(G.n)+'. Reception has been notified and will be with you shortly.');render();
+var t=$('#toast');t.textContent='Room '+G.r+' · '+G.n+' · '+type+': '+detail;t.style.display='block';setTimeout(function(){t.style.display='none'},2600)}
+function opts(list,type,pre){return list.map(function(x){return [x,function(){send(type,(pre||'')+x)}]})}
+var A={
+wifi:function(){bot('Here are the details:<br><br><b>Wi‑Fi network:</b> '+C.wifi+'<br><b>Password:</b> '+C.pass+'<br>'+C.times.map(function(t){return '<b>'+t[0]+':</b> '+t[1]}).join('<br>'))},
+services:function(){bot('Absolutely, '+esc(G.n)+'! What can I take care of for you?',[['Restaurant',A.rest],['Housekeeping',A.hk],['Laundry',function(){send('Laundry','Pickup requested')}],['Heater or firewood',A.heat],['Taxi booking',A.taxi],['Special occasions',A.occ]])},
+rest:function(){bot('Which meal should we bring to your room?',opts(['Breakfast','Lunch','Dinner','Kahwa and snacks'],'Restaurant','In-room '))},
+hk:function(){bot('What do you need in your room?',opts(['Extra towels','Extra blanket','Toiletries','Tea bags','Room cleaning'],'Housekeeping'))},
+heat:function(){bot('How can we keep you warm?',opts(['Room heater','Extra firewood','Hot water'],'Warmth'))},
+taxi:function(){bot('Where would you like to go?',opts(['Pahalgam market','Betaab Valley','Aru Valley','Baisaran','Chandanwari'],'Taxi','To '))},
+occ:function(){bot('Tell us the occasion and we’ll set it up.',opts(['Birthday','Anniversary','Honeymoon decor'],'Special occasion'))},
+guide:function(){bot('What would you like to explore?',[['Sightseeing',function(){bot('Popular day trips from Pahalgam: <b>Betaab Valley</b>, <b>Aru Valley</b>, <b>Baisaran</b> and <b>Chandanwari</b>. Ask us to book a taxi and we’ll arrange it.',[['Book a taxi',A.taxi]])}],['Where to eat',function(){bot('Try Kashmiri Wazwan, noon chai and kahwa. Ask reception for today’s picks.')}],['Markets',function(){bot('Pahalgam market is good for shawls, dry fruits, saffron and walnut wood crafts. Taxi can drop you there.')}],['Trek and pony tips',function(){bot('Fix pony rates before you start, carry a warm layer and start early. We can connect you with a trusted guide.')}]])},
+contacts:function(){bot('<b>Reception:</b> <a href="tel:'+C.reception.replace(/\s/g,'')+'">'+C.reception+'</a><br><b>Manager:</b> <a href="tel:'+C.manager.replace(/\s/g,'')+'">'+C.manager+'</a><br><b>Emergency:</b> <a href="tel:112">112</a>')},
+special:function(){bot('Of course. Type your request below and reception will see it straight away.');$('#cmp').style.display='flex';$('#menu').style.display='none';$('#ri').focus()},
+offers:function(){bot('Ask reception about our current stay offers, bonfire evenings and guided walks.')},
+policies:function(){bot('<b>Check-in:</b> 1:00 PM<br><b>Check-out:</b> 11:00 AM<br>Please keep noise low after 10:00 PM. Ask reception about our cancellation and ID policies.')}
+};
+var M=[['House & Wi‑Fi','wifi'],['Guest Services','services'],['Pahalgam Guide','guide'],['Contacts','contacts'],['Property & Offers','offers'],['Policies','policies'],['Special request','special']];
+M.forEach(function(m){var b=document.createElement('button');b.textContent=m[0];b.onclick=function(){you(m[0]);A[m[1]]()};$('#mbtns').appendChild(b)});
+function render(){var l=$('#list');l.innerHTML='';var open=reqs.filter(function(r){return !r.done}).length;var b=$('#bd');b.textContent=open;b.style.display=open?'inline':'none';
+if(!reqs.length){l.innerHTML='<div class="note">No requests yet. Send one from the guest view.</div>';return}
+reqs.forEach(function(r){var d=document.createElement('div');d.className='req'+(r.done?' done':'');d.innerHTML='<b>Room '+esc(G.r)+' · '+esc(G.n)+'</b>'+esc(r.type+': '+r.detail)+'<br><span>'+r.tm+'</span>';
+if(!r.done){var x=document.createElement('button');x.textContent='Mark done';x.onclick=function(){r.done=true;render()};d.appendChild(x)}l.appendChild(d)})}
+function tab(g){$('#cmp').style.display='none';$('#chat').style.display=g?'flex':'none';$('#menu').style.display=g?'block':'none';$('#desk').style.display=g?'none':'flex';$('#t1').className=g?'on':'';$('#t2').className=g?'':'on'}
+$('#t1').onclick=function(){tab(true)};$('#t2').onclick=function(){tab(false)};
+$('#enter').onclick=function(){G.n=$('#gn').value.trim()||'Guest';G.r=$('#gr').value.trim()||'101';$('#start').style.display='none';$('#who').innerHTML=esc(G.n)+'<br>Room '+esc(G.r);
+bot('Welcome, '+esc(G.n)+'. It’s wonderful to have you at The Walnut. I’m your personal concierge for the whole stay: meals, housekeeping, a ride into town, local tips. Just tap below and consider it handled.');render()};
+var T=[];
+function ft(){return new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})}
+function drawT(){['#dm'].forEach(function(s){var el=$(s);el.innerHTML='';T.forEach(function(m){var mine=m.w==='s';var d=document.createElement('div');d.className='tm'+(mine?' mine':'');d.innerHTML=esc(m.t)+'<small>'+m.tm+'</small>';el.appendChild(d)});el.scrollTop=el.scrollHeight})}
+function post(w,t){T.push({w:w,t:t,tm:ft()});drawT();
+if(w==='s'){add('rec','<small>Reception</small>'+esc(t))}
+if(w==='g'){var q=$('#toast');q.textContent='Room '+G.r+' · '+G.n+': '+t;q.style.display='block';setTimeout(function(){q.style.display='none'},2600)}}
+
+
+function snd(i,w){var v=$(i).value.trim();if(!v)return;$(i).value='';if(w==='s'){post('s',v)}else{send('Special request',v);$('#cmp').style.display='none';$('#menu').style.display='block'}}
+$('#rs').onclick=function(){snd('#ri','g')};$('#ds').onclick=function(){snd('#di','s')};$('#rx').onclick=function(){$('#cmp').style.display='none';$('#menu').style.display='block'};
+['#ri','#di'].forEach(function(s,k){$(s).onkeydown=function(e){if(e.key==='Enter')snd(s,k?'s':'g')}});
+
+
+var _e=$('#enter').onclick;$('#enter').onclick=function(){_e();G.r=G.r.replace(/[.#$\[\]\/]/g,'-');listen()};
+function listen(){DB.ref('rooms/'+G.r+'/messages').orderByChild('ts').startAt(Date.now()-86400000).on('child_added',function(x){var m=x.val();if(m.w==='s')add('rec','<small>Reception</small>'+esc(m.t))})}
+$('#gr').value=new URLSearchParams(location.search).get('room')||'';
+</script>
+</body>
+</html>

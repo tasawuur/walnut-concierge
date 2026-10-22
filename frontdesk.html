@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Walnut – Front Desk</title>
+<style>
+:root{--bg:#e8ecee;--card:#fff;--ink:#1f1a16;--mut:#5a5047;--line:#d3d9dc;--pine:#264535;--gold:#b9801a;--amb:#96620e}
+@media (prefers-color-scheme:dark){:root{--bg:#10171a;--card:#1c2528;--ink:#f1ebe4;--mut:#aaa196;--line:#2f3a3d;--pine:#4b8269;--gold:#e0a63c;--amb:#b47a1c}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,Segoe UI,sans-serif}
+#lock{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.card,section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.card{width:100%;max-width:340px}.card h1{margin:0}.card p{color:var(--mut)}
+input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+button{border:0;border-radius:10px;background:var(--pine);color:#fff;padding:10px 16px;font:600 14px system-ui,sans-serif;cursor:pointer}
+button.g{background:none;color:var(--ink);border:1px solid var(--line)}
+#err{color:#b3261e;margin-top:8px}
+header{display:flex;justify-content:space-between;padding:14px 18px;background:var(--card);border-bottom:1px solid var(--line)}
+.grid{display:grid;gap:14px;padding:14px;grid-template-columns:1fr}
+@media(min-width:800px){.grid{grid-template-columns:1fr 1fr}}
+h2{margin:0 0 10px;font-size:16px}
+.req{border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.req.done{border-left-color:var(--pine);opacity:.55}.req small{color:var(--mut)}.req div{margin-top:8px;display:flex;gap:8px}
+#th{height:50vh;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.tm{max-width:82%;padding:8px 12px;border-radius:14px 14px 14px 4px;background:var(--bg);border:1px solid var(--line);align-self:flex-start}
+.tm.mine{align-self:flex-end;border-radius:14px 14px 4px 14px;background:var(--amb);color:#fff;border-color:transparent}
+.rf{display:flex;gap:8px}
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+</head>
+<body>
+<div id="lock"><div class="card"><h1>Front desk</h1><p>The Walnut, Pahalgam</p><input id="pin" type="password" placeholder="PIN" inputmode="numeric"><br><br><button id="go">Open</button><div id="err"></div></div></div>
+<div id="main" hidden>
+<header><b>Front desk · The Walnut</b><span>● Live</span></header>
+<div class="grid"><section><h2>Requests</h2><div id="reqs"></div></section>
+<section><h2 id="ct">Chat: pick a request</h2><div id="th"></div><div class="rf"><input id="ri" placeholder="Reply to guest"><button id="rs">Reply</button></div></section></div>
+</div>
+<script>
+var PIN='1234'; // change this PIN
+var FB={apiKey:"AIzaSyCp-Wfaj2DCZjZcqQcW4lAR6cAVOn6pPUE",authDomain:"thewalnut-concierge.firebaseapp.com",databaseURL:"https://thewalnut-concierge-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"thewalnut-concierge",storageBucket:"thewalnut-concierge.firebasestorage.app",messagingSenderId:"727484359971",appId:"1:727484359971:web:5db70731630761d541d896"};
+firebase.initializeApp(FB);
+var DB=firebase.database(),TS=firebase.database.ServerValue.TIMESTAMP,$=function(s){return document.querySelector(s)},cur=null,stop=null,ctx=null,t0=Date.now()-30000;
+function beep(){try{ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();var o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=880;g.gain.value=.25;o.start();o.stop(ctx.currentTime+.4)}catch(e){}}
+function tm(t){return new Date(t).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})}
+function openChat(room){cur=room;if(stop)stop();$('#ct').textContent='Chat · Room '+room;$('#th').innerHTML='';var r=DB.ref('rooms/'+room+'/messages');
+var f=r.on('child_added',function(x){var m=x.val(),d=document.createElement('div');d.className='tm'+(m.w==='s'?' mine':'');d.textContent=m.t;$('#th').appendChild(d);$('#th').scrollTop=1e6});stop=function(){r.off('child_added',f)}}
+function draw(a){var l=$('#reqs');l.innerHTML='';if(!a.length){l.textContent='No requests yet.';return}
+a.forEach(function(v){var d=document.createElement('div');d.className='req'+(v.done?' done':'');var b=document.createElement('b');b.textContent='Room '+v.room+' · '+v.guest;d.appendChild(b);
+var t=document.createElement('div');t.style.margin='0';t.textContent=v.type+': '+v.detail;d.appendChild(t);var s=document.createElement('small');s.textContent=tm(v.ts);d.appendChild(s);
+var r=document.createElement('div'),c=document.createElement('button');c.textContent='Open chat';c.onclick=function(){openChat(v.room)};r.appendChild(c);
+if(!v.done){var k=document.createElement('button');k.className='g';k.textContent='Mark done';k.onclick=function(){DB.ref('requests/'+v.k).update({done:true})};r.appendChild(k)}d.appendChild(r);l.appendChild(d)})}
+function start(){DB.ref('requests').limitToLast(100).on('value',function(s){var a=[];s.forEach(function(c){var v=c.val();v.k=c.key;a.push(v)});a.sort(function(x,y){return y.ts-x.ts});draw(a)});
+DB.ref('requests').orderByChild('ts').startAt(t0).on('child_added',function(s){var v=s.val();beep();try{new Notification('Room '+v.room+' · '+v.guest,{body:v.type+': '+v.detail})}catch(e){}})}
+$('#go').onclick=function(){if($('#pin').value!==PIN){$('#err').textContent='Wrong PIN';return}$('#lock').hidden=true;$('#main').hidden=false;try{ctx=new (window.AudioContext||window.webkitAudioContext)();Notification.requestPermission()}catch(e){}start()};
+$('#pin').onkeydown=function(e){if(e.key==='Enter')$('#go').click()};
+function reply(){var v=$('#ri').value.trim();if(!v||!cur)return;DB.ref('rooms/'+cur+'/messages').push({w:'s',t:v,ts:TS});$('#ri').value=''}
+$('#rs').onclick=reply;$('#ri').onkeydown=function(e){if(e.key==='Enter')reply()};
+</script>
+</body>
+</html>
